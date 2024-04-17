@@ -16,8 +16,6 @@ const MeatsTableForAdmin = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-
         if (data?.detail == "Invalid token") {
           navigate("/auth/login");
         }

@@ -1,12 +1,27 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
-import { AddModalProps } from "../types/types";
+import { AddModalProps, ProductType } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import { BiMinus, BiPlus } from "react-icons/bi";
 
 const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
   const token = localStorage.getItem("auth");
   const [isLoading, setIsLoading] = useState(false);
+  const [neededProducts, setNeededProducts] = useState<any>([{}]);
   const navigate = useNavigate();
+  const [products, setProducts] = useState<ProductType[]>([]);
+
+  useEffect(() => {
+    fetch(import.meta.env.VITE_APP_URL + "/product", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.result);
+      });
+  }, []);
   const Submit = (e: any) => {
     setIsLoading(true);
     e.preventDefault();
@@ -48,10 +63,11 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
           });
       });
   };
+
   return (
     <div>
       <div
-        className={`w-96 bg-slate-200 shadow-md fixed h-dvh z-20 p-5 ${
+        className={`w-96 bg-slate-200 shadow-md fixed h-dvh z-20 p-5 overflow-y-auto ${
           isOpen
             ? "right-0 top-0 duration-300"
             : "duration-1000 right-[-100%] top-0"
@@ -81,7 +97,77 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
             name="price"
           />
           <input type="file" accept="image/*" name="image" />
+          <div className="flex flex-col gap-5">
+            <label className="text-xl" htmlFor="product">
+              Taomni tayyorlash uchun kerakli mahsulotlar:
+            </label>
+            {neededProducts.map((el: any, i: number) => {
+              return (
+                <div
+                  className="flex gap-5 justify-between items-center"
+                  key={i}
+                >
+                  <select
+                    onChange={(e) => {
+                      neededProducts[i].id = e.target.value;
+                      setNeededProducts(neededProducts);
+                    }}
+                    id="product"
+                    className="rounded-md w-2/5 text-lg outline-1 outline-gray-300 border-none p-1"
+                    defaultValue={el.id}
+                  >
+                    {products.map((e) => {
+                      return (
+                        <option key={e.id} value={e.id}>
+                          {e.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <input
+                    onChange={(e) => {
+                      neededProducts[i].weight = e.target.value;
+                      setNeededProducts(neededProducts);
+                    }}
+                    defaultValue={el.weight}
+                    min={1}
+                    type="number"
+                    className="rounded-md w2/4 pl-2 text-lg outline-1 outline-gray-300 border-none p-1"
+                    placeholder="Miqdorni kiriring (kg)"
+                  />
+                </div>
+              );
+            })}
+          </div>
           <div className="flex flex-col gap-3">
+            <div className="flex gap-5">
+              <button
+                type="button"
+                className="flex w-2/4 h-8 bg-green-500 text-white items-center justify-center rounded-lg gap-5"
+                onClick={() => {
+                  setNeededProducts((prev: any) => [...prev, {}]);
+                }}
+              >
+                Yana qo'shish
+                <BiPlus />
+              </button>
+              <button
+                type="button"
+                className="flex w-2/4 h-8 bg-red-500 text-white items-center justify-center rounded-lg gap-5"
+                onClick={() => {
+                  setNeededProducts((prev: any) =>
+                    prev.filter(
+                      (_: any, inx: number) =>
+                        neededProducts.length === 1 ||
+                        inx !== neededProducts.length - 1
+                    )
+                  );
+                }}
+              >
+                Ayirish
+                <BiMinus />
+              </button>
+            </div>
             <button
               className="bg-blue-500 text-white h-8 rounded-md disabled:bg-slate-400 flex justify-center items-center"
               disabled={isLoading}
