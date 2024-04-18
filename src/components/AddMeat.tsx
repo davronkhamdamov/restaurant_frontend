@@ -3,6 +3,7 @@ import { IoClose } from "react-icons/io5";
 import { AddModalProps, ProductType } from "../types/types";
 import { useNavigate } from "react-router-dom";
 import { BiMinus, BiPlus } from "react-icons/bi";
+import { notify } from "../utils/utils";
 
 const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
   const token = localStorage.getItem("auth");
@@ -65,6 +66,7 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
             }
             if ((data.status = "ok")) {
               setIsOpen(false);
+              notify("Muvaffaqiyat qo'shildi", "success");
               setIsLoading(false);
               e.target.reset();
             }

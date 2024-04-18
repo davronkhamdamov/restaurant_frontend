@@ -6,6 +6,7 @@ import { MdEdit } from "react-icons/md";
 import { BiPlus } from "react-icons/bi";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import AddWeight from "./AddWeightModal";
+import { notify } from "../utils/utils";
 
 const ProductTable = () => {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ const ProductTable = () => {
           navigate("/auth/login");
         }
         if ((data.status = "ok")) {
+          notify("Muvaffaqiyat o'chirildi", "success");
           fetchData();
         }
       });

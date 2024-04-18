@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { OrdersType } from "../types/types";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { CurrencyFormatter } from "../utils/utils";
+import { CurrencyFormatter, notify } from "../utils/utils";
 import { GrPowerCycle } from "react-icons/gr";
 import { MdDone } from "react-icons/md";
 import { CiClock1 } from "react-icons/ci";
+import dayjs from "dayjs";
 
 const status = {
   Kutilmoqda: {
@@ -64,12 +65,13 @@ const OrderStatusTable = () => {
         }
         if ((data.status = "ok")) {
           fetchData();
+          notify("Buyurtma olindi", "success");
         }
       });
   };
   return (
     <div className="pt-10 flex">
-      <div className="flex flex-wrap gap-6 w-[80%]">
+      <div className="flex flex-wrap gap-6 w-full">
         {orders?.map((el) => {
           return (
             <div
@@ -91,6 +93,18 @@ const OrderStatusTable = () => {
                 <div className="flex justify-center items-center gap-2">
                   {status[el.status].text}
                   {status[el.status].icon}
+                </div>
+                <div className="mt-1">
+                  <p>
+                    Buyurtma qilingan vaqt:{" "}
+                    {dayjs(el.created_at).format("HH:MM")}
+                  </p>
+                  <p>
+                    Yangilangan vaqt:{" "}
+                    {el.updated_at
+                      ? dayjs(el.updated_at).format("HH:MM")
+                      : "-:-"}
+                  </p>
                 </div>
                 <div key={el.id} className="flex justify-around mt-3">
                   <button

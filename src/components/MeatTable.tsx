@@ -4,7 +4,7 @@ import { MeatsType, OrdersType } from "../types/types";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import emptyImg from "../assets/svg.svg";
 import { FaPlus, FaMinus, FaRightToBracket } from "react-icons/fa6";
-import { CurrencyFormatter } from "../utils/utils";
+import { CurrencyFormatter, notify } from "../utils/utils";
 
 const MeatTable = () => {
   const [orders, setOrders] = useState<OrdersType[]>([]);
@@ -32,7 +32,6 @@ const MeatTable = () => {
   }, []);
 
   const OrderMeat = () => {
-    console.log(orders);
     fetch(import.meta.env.VITE_APP_URL + "/order", {
       method: "POST",
       headers: {
@@ -45,9 +44,14 @@ const MeatTable = () => {
       .then((data) => {
         if (data?.detail == "Invalid token") {
           navigate("/auth/login");
+        } else if (data?.message === "not enough") {
+          data?.result?.map((e: any) => {
+            notify(e.name + " yetarli emas", "error");
+          });
         }
-        if ((data.status = "ok")) {
-          console.log(data);
+        if ((data.message = "created")) {
+          setOrders([]);
+          notify("Buyurtma qabul qilindi", "success");
         }
       });
   };

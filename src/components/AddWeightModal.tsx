@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { EditModalType } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import { notify } from "../utils/utils";
 
 const AddWeight: FC<EditModalType> = ({ id, isOpen, setData }) => {
   const token = localStorage.getItem("auth");
@@ -29,6 +30,7 @@ const AddWeight: FC<EditModalType> = ({ id, isOpen, setData }) => {
         }
         if ((data.status = "ok")) {
           setData(false);
+          notify("Muvaffaqiyat qo'shildi", "success");
           e.target.reset();
         }
       })

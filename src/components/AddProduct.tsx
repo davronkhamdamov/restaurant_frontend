@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { AddModalProps } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import { notify } from "../utils/utils";
 
 const AddProduct: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
   const token = localStorage.getItem("auth");
@@ -42,6 +43,7 @@ const AddProduct: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
               navigate("/auth/login");
             }
             if ((data.status = "ok")) {
+              notify("Muvaffaqiyat qo'shildi", "success");
               setIsOpen(false);
               e.target.reset();
             }

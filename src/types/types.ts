@@ -39,6 +39,8 @@ export interface OrdersType {
     status: "Kutilmoqda" | "Tayyorlanmoqda" | 'Tayyor'
     name?: string
     img_url?: string
+    created_at: string
+    updated_at: string
 }
 export interface EditModalType {
     id: string

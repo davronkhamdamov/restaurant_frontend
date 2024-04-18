@@ -2,6 +2,7 @@ import { FC } from "react";
 import { IoClose } from "react-icons/io5";
 import { AddModalProps } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import { notify } from "../utils/utils";
 
 const AddStaff: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const AddStaff: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
       .then((data) => {
         if (data?.status == "ok") {
           setIsOpen(false);
+          notify("Muvaffaqiyat qo'shildi", "success");
         }
         if (data?.detail == "Invalid token") {
           navigate("/auth/login");

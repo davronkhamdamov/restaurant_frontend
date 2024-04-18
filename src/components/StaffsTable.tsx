@@ -3,6 +3,7 @@ import { StaffsType } from "../types/types";
 import { MdModeEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { notify } from "../utils/utils";
 
 const StaffsTable = () => {
   const [staffs, setStaffs] = useState<StaffsType[]>([]);
@@ -42,6 +43,7 @@ const StaffsTable = () => {
           navigate("/auth/login");
         }
         if ((data.status = "ok")) {
+          notify("Muvaffaqiyat o'chirildi", "success");
           fetchData();
         }
       });

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { MeatsType } from "../types/types";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { CurrencyFormatter } from "../utils/utils";
+import { CurrencyFormatter, notify } from "../utils/utils";
 
 const MeatsTableForAdmin = () => {
   const [meats, setMeats] = useState<MeatsType[]>([]);
@@ -43,6 +43,7 @@ const MeatsTableForAdmin = () => {
           navigate("/auth/login");
         }
         if ((data.status = "ok")) {
+          notify("Muvaffaqiyat o'chirildi", "success");
           fetchData();
         }
       });
