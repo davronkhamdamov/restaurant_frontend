@@ -19,8 +19,6 @@ const MeatTable = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-
         if (data?.detail == "Invalid token") {
           navigate("/auth/login");
         }
@@ -32,6 +30,27 @@ const MeatTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const OrderMeat = () => {
+    console.log(orders);
+    fetch(import.meta.env.VITE_APP_URL + "/order", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(orders),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.detail == "Invalid token") {
+          navigate("/auth/login");
+        }
+        if ((data.status = "ok")) {
+          console.log(data);
+        }
+      });
+  };
   return (
     <div className="pt-10 flex">
       <div className="flex flex-wrap gap-6 w-[80%]">
@@ -53,14 +72,16 @@ const MeatTable = () => {
                   {CurrencyFormatter(el.price)}
                 </p>
                 <p>{el.name}</p>
-                {!orders?.some((e: any) => e.id == el.id && e.count >= 1) ? (
-                  <div className="flex justify-around mt-3">
+                {!orders?.some(
+                  (e: any) => e.meat_id == el.id && e.count >= 1
+                ) ? (
+                  <div key={el.id} className="flex justify-around mt-3">
                     <button
                       className="w-full h-10 bg-slate-700 rounded-xl text-white duration-200"
                       onClick={() => {
                         setOrders((prev: any) => [
                           ...prev,
-                          { ...el, count: 1 },
+                          { meat_id: el.id, price: el.price, count: 1 },
                         ]);
                       }}
                     >
@@ -74,7 +95,7 @@ const MeatTable = () => {
                       onClick={() => {
                         const result = orders
                           .map((e: any) => {
-                            return e.id == el.id
+                            return e.meat_id == el.id
                               ? { ...e, count: (e.count -= 1) }
                               : { ...e };
                           })
@@ -84,15 +105,13 @@ const MeatTable = () => {
                     >
                       <FaMinus />
                     </button>
-                    <p>
-                      {orders?.find((e: OrdersType) => e.id === el.id)?.count}
-                    </p>
+                    <p>{orders?.find((e) => e.meat_id == el.id)?.count}</p>
                     <button
                       className="w-10 flex items-center justify-center"
                       onClick={() => {
                         setOrders(
                           orders.map((e: any) => {
-                            return e.id == el.id
+                            return e.meat_id == el.id
                               ? { ...e, count: (e.count += 1) }
                               : { ...e };
                           })
@@ -127,17 +146,21 @@ const MeatTable = () => {
             </div>
           ) : (
             orders.map((e: OrdersType) => {
+              const foundMeat = meats.find((meat) => meat.id === e.meat_id);
               return (
-                <div className="mt-5 flex items-center justify-between">
+                <div
+                  className="mt-5 flex items-center justify-between"
+                  key={e.meat_id}
+                >
                   <LazyLoadImage
                     effect="blur"
                     width={100}
-                    src={e.img_url}
+                    src={foundMeat?.img_url}
                     className="f-full object-contain rounded-xl"
                   />
                   <div>
-                    <p>{e.name}</p>
-                    <p>{CurrencyFormatter(e.price)}</p>
+                    <p>{foundMeat?.name}</p>
+                    <p>{CurrencyFormatter(foundMeat?.price)}</p>
                   </div>
                   <div className="bg-gray-100 rounded-2xl flex justify-center gap-1 mt-3 items-center">
                     <button
@@ -145,7 +168,7 @@ const MeatTable = () => {
                       onClick={() => {
                         const result = orders
                           .map((el: any) => {
-                            return e.id == el.id
+                            return e.meat_id == el.meat_id
                               ? { ...el, count: (e.count -= 1) }
                               : { ...el };
                           })
@@ -161,7 +184,7 @@ const MeatTable = () => {
                       onClick={() => {
                         setOrders(
                           orders.map((el: any) => {
-                            return e.id == el.id
+                            return e.meat_id == el.meat_id
                               ? { ...el, count: (e.count += 1) }
                               : { ...el };
                           })
@@ -179,7 +202,12 @@ const MeatTable = () => {
           <hr />
           {orders[0] && (
             <div className="absolute bottom-44 w-full">
-              <button className="bg-green-600 text-white rounded-xl w-full h-14 flex items-center justify-around">
+              <button
+                className="bg-green-600 text-white rounded-xl w-full h-14 flex items-center justify-around"
+                onClick={() => {
+                  OrderMeat();
+                }}
+              >
                 <p>Buyurma qilish</p>
                 <p>
                   {CurrencyFormatter(

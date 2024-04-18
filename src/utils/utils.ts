@@ -1,8 +1,8 @@
-export const CurrencyFormatter = (amount: number) => {
+export const CurrencyFormatter = (amount: number | undefined) => {
     return new Intl.NumberFormat("uz-UZ", {
         style: "currency",
         currency: 'UZS',
         currencyDisplay: 'code',
         maximumFractionDigits: 0
-    }).format(amount).replace("UZS", '').replace(",", ' ').trim() + " UZS"
+    }).format(amount || 0).replace("UZS", '').replace(",", ' ').trim() + " UZS"
 }

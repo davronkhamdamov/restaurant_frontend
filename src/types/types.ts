@@ -32,11 +32,9 @@ export interface MeatsType {
     img_url: string
 }
 export interface OrdersType {
-    id: string
+    meat_id: string
     count: number
-    name: string
     price: number
-    img_url: string
 }
 export interface EditModalType {
     id: string
