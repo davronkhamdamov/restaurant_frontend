@@ -95,6 +95,7 @@ const AddStaff: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
           >
             <option value="staff">Xodim</option>
             <option value="admin">Admin</option>
+            <option value="maker">Maker</option>
           </select>
           <div className="flex flex-col gap-3">
             <button className="bg-blue-500 text-white h-8 rounded-md">

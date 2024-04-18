@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router";
 import Loader from "../components/Loader/Loader";
 import ContentLayout from "./ContentLayout";
-import { TbClock } from "react-icons/tb";
 import { IoFastFoodOutline } from "react-icons/io5";
 
-const StaffLayout = () => {
+const MakeMeatLayout = () => {
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -20,13 +19,8 @@ const StaffLayout = () => {
       <ContentLayout
         items={[
           {
-            path: "meats",
+            path: "meat",
             icon: <IoFastFoodOutline size={25} />,
-            text: "Ovqatlar",
-          },
-          {
-            path: "order",
-            icon: <TbClock size={25} />,
             text: "Buyurtmalar",
           },
         ]}
@@ -38,4 +32,4 @@ const StaffLayout = () => {
   );
 };
 
-export default StaffLayout;
+export default MakeMeatLayout;

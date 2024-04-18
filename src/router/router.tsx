@@ -13,6 +13,8 @@ import AdminLayout from "../layout/AdminLayout";
 import StaffLayout from "../layout/StaffLayout";
 import Products from "../pages/Products";
 import Meat from "../pages/Meat";
+import MakeMeatLayout from "../layout/MakeMeatLayout";
+import MakeMeat from "../pages/MakeMeat";
 
 const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +29,9 @@ const Router = createBrowserRouter(
       <Route path="/staff" element={<StaffLayout />}>
         <Route path="meats" element={<MeatsToOrder />} />
         <Route path="order" element={<Orders />} />
+      </Route>
+      <Route path="/maker" element={<MakeMeatLayout />}>
+        <Route path="meat" element={<MakeMeat />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </>
