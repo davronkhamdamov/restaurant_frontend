@@ -36,7 +36,7 @@ export interface OrdersType {
     meat_id: string
     count: number
     price: number
-    status: string
+    status: "Kutilmoqda" | "Tayyorlanmoqda" | 'Tayyor'
     name?: string
     img_url?: string
 }

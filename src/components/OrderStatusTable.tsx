@@ -3,6 +3,24 @@ import { useNavigate } from "react-router-dom";
 import { OrdersType } from "../types/types";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { CurrencyFormatter } from "../utils/utils";
+import { GrPowerCycle } from "react-icons/gr";
+import { MdDone } from "react-icons/md";
+import { CiClock1 } from "react-icons/ci";
+
+const status = {
+  Kutilmoqda: {
+    text: "Kutilmoqda",
+    icon: <CiClock1 />,
+  },
+  Tayyorlanmoqda: {
+    text: "Tayyorlanmoqda",
+    icon: <GrPowerCycle className="animate-spin" />,
+  },
+  Tayyor: {
+    text: <p className="text-green-600">Tayyor</p>,
+    icon: <MdDone color="green" />,
+  },
+};
 
 const OrderStatusTable = () => {
   const [orders, setOrders] = useState<OrdersType[]>([]);
@@ -70,7 +88,10 @@ const OrderStatusTable = () => {
                   {CurrencyFormatter(el.price)}
                 </p>
                 <p>{el.count + " ta " + el.name}</p>
-                <p>{el.status}</p>
+                <div className="flex justify-center items-center gap-2">
+                  {status[el.status].text}
+                  {status[el.status].icon}
+                </div>
                 <div key={el.id} className="flex justify-around mt-3">
                   <button
                     className="w-full h-10 bg-slate-900 rounded-xl text-white duration-200 disabled:bg-slate-400"

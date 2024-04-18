@@ -132,7 +132,12 @@ const MeatTable = () => {
           <div className="flex justify-between">
             <p className="text-2xl font-bold">Savat</p>
             {orders[0] && (
-              <button className="hover:bg-gray-100 h-7 rounded-lg w-20">
+              <button
+                className="hover:bg-gray-100 h-7 rounded-lg w-20"
+                onClick={() => {
+                  setOrders([]);
+                }}
+              >
                 Tozalash
               </button>
             )}
