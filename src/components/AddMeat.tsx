@@ -19,6 +19,14 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
     })
       .then((res) => res.json())
       .then((data) => {
+        if (!neededProducts[0]?.product_id) {
+          setNeededProducts([
+            {
+              product_id: data.result[0].product_id,
+              weight_type: data.result[0].weight_type,
+            },
+          ]);
+        }
         setProducts(data.result);
       });
   }, []);
@@ -47,17 +55,17 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
             name: name.value,
             price: price.value,
             img_url: data.url,
+            needed_products: neededProducts,
           }),
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
-
             if (data?.detail == "Invalid token") {
               navigate("/auth/login");
             }
             if ((data.status = "ok")) {
               setIsOpen(false);
+              setIsLoading(false);
               e.target.reset();
             }
           });
@@ -67,7 +75,7 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
   return (
     <div>
       <div
-        className={`w-96 bg-slate-200 shadow-md fixed h-dvh z-20 p-5 overflow-y-auto ${
+        className={`w-[500px] bg-slate-200 shadow-md fixed h-dvh z-20 p-5 overflow-y-auto ${
           isOpen
             ? "right-0 top-0 duration-300"
             : "duration-1000 right-[-100%] top-0"
@@ -89,14 +97,16 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
             className="rounded-md pl-2 text-lg outline-1 outline-gray-300 border-none p-1"
             placeholder="Taom nomini kiriting"
             name="name"
+            required
           />
           <input
             type="number"
             className="rounded-md pl-2 text-lg outline-1 outline-gray-300 border-none p-1"
             placeholder="Narxini kiriting"
             name="price"
+            required
           />
-          <input type="file" accept="image/*" name="image" />
+          <input type="file" accept="image/*" name="image" required />
           <div className="flex flex-col gap-5">
             <label className="text-xl" htmlFor="product">
               Taomni tayyorlash uchun kerakli mahsulotlar:
@@ -109,16 +119,25 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
                 >
                   <select
                     onChange={(e) => {
-                      neededProducts[i].id = e.target.value;
-                      setNeededProducts(neededProducts);
+                      const updatedNeededProducts = [...neededProducts];
+                      updatedNeededProducts[i].product_id = e.target.value;
+                      setNeededProducts(updatedNeededProducts);
                     }}
                     id="product"
                     className="rounded-md w-2/5 text-lg outline-1 outline-gray-300 border-none p-1"
                     defaultValue={el.id}
+                    required
                   >
                     {products.map((e) => {
                       return (
-                        <option key={e.id} value={e.id}>
+                        <option
+                          key={e.id}
+                          value={e.id}
+                          disabled={neededProducts.some(
+                            (ele: any, idx: number) =>
+                              ele.product_id === e.id && idx !== i
+                          )}
+                        >
                           {e.name}
                         </option>
                       );
@@ -129,11 +148,16 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
                       neededProducts[i].weight = e.target.value;
                       setNeededProducts(neededProducts);
                     }}
+                    step="0.01"
                     defaultValue={el.weight}
                     min={1}
+                    required
                     type="number"
-                    className="rounded-md w2/4 pl-2 text-lg outline-1 outline-gray-300 border-none p-1"
-                    placeholder="Miqdorni kiriring (kg)"
+                    className="rounded-md w-3/4 pl-2 text-lg outline-1 outline-gray-300 border-none p-1"
+                    placeholder={`Miqdorni kiriting ${
+                      products.find((e) => e.id == neededProducts[i].product_id)
+                        ?.weight_type
+                    }`}
                   />
                 </div>
               );
@@ -143,9 +167,24 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
             <div className="flex gap-5">
               <button
                 type="button"
-                className="flex w-2/4 h-8 bg-green-500 text-white items-center justify-center rounded-lg gap-5"
+                className="flex w-2/4 h-8 bg-green-500 text-white items-center justify-center rounded-lg gap-5 disabled:bg-green-300"
+                disabled={products.length <= neededProducts.length}
                 onClick={() => {
-                  setNeededProducts((prev: any) => [...prev, {}]);
+                  if (products.length > neededProducts.length) {
+                    const nextProduct = products.filter((e) => {
+                      return neededProducts.every(
+                        (el: any) => el.product_id !== e.id
+                      );
+                    });
+
+                    setNeededProducts((prev: any) => [
+                      ...prev,
+                      {
+                        product_id: nextProduct[0]?.id,
+                        weight_type: nextProduct[0]?.weight_type,
+                      },
+                    ]);
+                  }
                 }}
               >
                 Yana qo'shish
@@ -153,7 +192,8 @@ const AddMeat: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
               </button>
               <button
                 type="button"
-                className="flex w-2/4 h-8 bg-red-500 text-white items-center justify-center rounded-lg gap-5"
+                className="flex w-2/4 h-8 bg-red-500 text-white items-center justify-center rounded-lg gap-5 disabled:bg-red-300"
+                disabled={neededProducts.length <= 1}
                 onClick={() => {
                   setNeededProducts((prev: any) =>
                     prev.filter(

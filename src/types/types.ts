@@ -23,11 +23,12 @@ export interface ProductType {
     name: string
     price: number
     weight: number
+    weight_type: string
 }
 export interface MeatsType {
     id: string
     name: string
-    price: string
+    price: number
     img_url: string
 }
 export interface OrdersType {

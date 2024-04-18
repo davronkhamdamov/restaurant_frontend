@@ -10,7 +10,7 @@ const AddProduct: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
   const Submit = async (e: any) => {
     setIsLoading(true);
     e.preventDefault();
-    const { name, price, weight } = e.target;
+    const { name, price, weight, type } = e.target;
 
     const formData = new FormData();
     formData.append("file", e.target.image.files[0]);
@@ -33,6 +33,7 @@ const AddProduct: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
             price: price.value,
             img_url: data.url,
             weight: weight.value,
+            weight_type: type.value,
           }),
         })
           .then((res) => res.json())
@@ -73,12 +74,22 @@ const AddProduct: FC<AddModalProps> = ({ isOpen, setIsOpen }) => {
             placeholder="Mahsulot nomini kiriting"
             name="name"
           />
-          <input
-            type="number"
-            className="rounded-md pl-2 text-lg outline-1 outline-gray-300 border-none p-1"
-            placeholder="Qancha mahsulot borligini kiriting"
-            name="weight"
-          />
+          <div className="flex justify-between items-center gap-5">
+            <input
+              type="number"
+              className="rounded-md pl-2 text-lg outline-1 outline-gray-300 border-none p-1 w-3/4"
+              placeholder="Qancha mahsulot borligini kiriting"
+              name="weight"
+            />
+            <select
+              name="type"
+              className="rounded-md text-lg outline-1 outline-gray-300 border-none p-1 w-24 h-9"
+            >
+              <option value="kg">KG</option>
+              <option value="litr">Litr</option>
+              <option value="gramm">Gramm</option>
+            </select>
+          </div>
           <input
             type="number"
             className="rounded-md pl-2 text-lg outline-1 outline-gray-300 border-none p-1"
